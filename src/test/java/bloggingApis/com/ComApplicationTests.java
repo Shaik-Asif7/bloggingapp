@@ -8,7 +8,7 @@ class ComApplicationTests {
 
 	@Test
 	void contextLoads() {
-		sfsf
+
 	}
 
 }

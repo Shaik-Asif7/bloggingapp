@@ -1,17 +1,13 @@
 package bloggingApis.com.serviceImpl;
 
 import bloggingApis.com.entity.User;
-import bloggingApis.com.exception.UserException;
+import bloggingApis.com.exception.UserCustomException;
 import bloggingApis.com.payload.UserDto;
 import bloggingApis.com.repository.UserRepository;
 import bloggingApis.com.service.UserService;
-import jdk.jshell.spi.ExecutionControl;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,19 +16,20 @@ import static java.util.Arrays.stream;
 @Service
 public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
-    public UserServiceImpl(UserRepository userRepository){
+    private final ModelMapper mapper;
+    public UserServiceImpl(UserRepository userRepository, ModelMapper mapper){
         this.userRepository=userRepository;
+        this.mapper=mapper;
     }
     public List<UserDto> getUsers() {
       List<User> users=userRepository.findAll();
       List<UserDto> userDtos=users.stream()
               .map(user->convertEntitytoDto(user))
               .collect(Collectors.toList());
-
       return userDtos;
     }
     public UserDto getUserById(int id){
-       User user=userRepository.findById(id).orElseThrow(()->new UserException("User not found"));
+       User user=userRepository.findById(id).orElseThrow(()->new UserCustomException("User not found with id %d",id));
        return convertEntitytoDto(user);
     }
     public UserDto addUser(User user){
@@ -43,7 +40,7 @@ public class UserServiceImpl implements UserService{
     }
 
     public UserDto updateUser(User user,int id){
-        User extistingUser=userRepository.findById(id).orElseThrow(()->new UserException("User not found"));
+        User extistingUser=userRepository.findById(id).orElseThrow(()->new UserCustomException("User not found with id %d",id));
             extistingUser.setName(user.getName());
             extistingUser.setEmail(user.getEmail());
             extistingUser.setAbout(user.getAbout());
@@ -53,18 +50,12 @@ public class UserServiceImpl implements UserService{
     }
 
     public void deleteUser(int id) {
-        User user=userRepository.findById(id).orElseThrow(()-> new UserException("User not found"));
+        User user=userRepository.findById(id).orElseThrow(()-> new UserCustomException("User not found with id %d",id));
         userRepository.delete(user);
     }
-
-    public UserDto convertEntitytoDto(User user){
-        UserDto userDto=new UserDto();
-        userDto.setId(user.getId());
-        userDto.setName(user.getName());
-        userDto.setEmail(user.getEmail());
-        userDto.setAbout(user.getAbout());
-        return userDto;
-    }
+     public UserDto convertEntitytoDto(User user){
+        return mapper.map(user, UserDto.class);
+     }
 //    public User dtoToEntity(UserDto userDto){
 //        User user=new User();
 //        user.setId(userDto.getId());

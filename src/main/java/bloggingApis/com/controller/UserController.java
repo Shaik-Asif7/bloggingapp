@@ -1,13 +1,17 @@
 package bloggingApis.com.controller;
 
 import bloggingApis.com.entity.User;
+import bloggingApis.com.payload.ApiResponse;
 import bloggingApis.com.payload.UserDto;
 import bloggingApis.com.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/blog")
 public class UserController {
@@ -15,30 +19,25 @@ public class UserController {
         public UserController(UserService userService) {
             this.userService = userService;
         }
-
         @PostMapping("/addUser")
-        public ResponseEntity<UserDto> addUser(@RequestBody User user) {
-            UserDto userDto=userService.addUser(user);
-            return new ResponseEntity<>(userDto, HttpStatus.CREATED);
+        public ResponseEntity<UserDto> addUser(@Valid @RequestBody User user) {
+            return new ResponseEntity<>(userService.addUser(user), HttpStatus.CREATED);
         }
-
         @GetMapping("/getAllUsers")
         public ResponseEntity<List<UserDto>> getUsers() {
-            List<UserDto> userDtos=userService.getUsers();
-            return new ResponseEntity<>(userDtos,HttpStatus.OK);
+            return new ResponseEntity<>(userService.getUsers(),HttpStatus.OK);
         }
         @GetMapping("/user/{id}")
         public ResponseEntity<UserDto> getUserById(@PathVariable("id") int id){
-            UserDto userDto=userService.getUserById(id);
-            return new ResponseEntity<>(userDto,HttpStatus.OK);
+            return new ResponseEntity<>(userService.getUserById(id),HttpStatus.OK);
         }
         @PutMapping("/updateUser/{id}")
-        public UserDto updateUser(@RequestBody User user,@PathVariable("id") int id){
+        public UserDto updateUser(@Valid @RequestBody User user,@PathVariable("id") int id){
             return userService.updateUser(user,id);
        }
        @DeleteMapping("/deleteUser/{id}")
-       public ResponseEntity<?> deleteUser(@PathVariable("id") int id){
+       public ResponseEntity<ApiResponse> deleteUser(@PathVariable("id") int id){
              userService.deleteUser(id);
-             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+             return new ResponseEntity<>(new ApiResponse("User Deleted Successfully",true),HttpStatus.OK);
        }
 }

@@ -33,10 +33,11 @@ public class UserServiceImpl implements UserService{
        return convertEntitytoDto(user);
     }
     public UserDto addUser(User user){
-        UserDto userDto=convertEntitytoDto(user);
+        if(userRepository.existsByEmail(user.getEmail())){
+            throw new UserCustomException("Email already exists",user.getId());
+        }
         userRepository.save(user);
-        userDto.setId(user.getId());
-        return userDto;
+        return convertEntitytoDto(user);
     }
 
     public UserDto updateUser(User user,int id){

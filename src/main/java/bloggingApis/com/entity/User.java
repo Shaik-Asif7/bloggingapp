@@ -21,6 +21,7 @@ public class User {
     @Size(min = 2,max =50,message = "Name must be between 2 and 50 characters")
     private String name;
 
+    @Column(unique = true,nullable = false)
     @Email(message = "Enter a valid email address")
     @NotBlank(message = "mail required")
     private String email;

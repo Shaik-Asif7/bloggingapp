@@ -15,8 +15,7 @@ import org.hibernate.validator.constraints.UniqueElements;
 public class User {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private int id;
-
+    private Integer id;
     @NotBlank(message = "Name required")
     @Size(min = 2,max =50,message = "Name must be between 2 and 50 characters")
     private String name;
@@ -32,11 +31,11 @@ public class User {
 
     private String about;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

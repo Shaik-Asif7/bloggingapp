@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService{
     }
     public UserDto addUser(User user){
         if(userRepository.existsByEmail(user.getEmail())){
-            throw new UserCustomException("Email already exists",user.getId());
+            throw new UserCustomException("User with this Email already exists",user.getId());
         }
         userRepository.save(user);
         return convertEntitytoDto(user);

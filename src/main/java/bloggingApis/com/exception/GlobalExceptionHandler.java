@@ -23,4 +23,8 @@ public class GlobalExceptionHandler {
                 errors.put(error.getField(), error.getDefaultMessage()));
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(CategoryCustomException.class)
+    public ResponseEntity<?> categoryCustomExcetionHandler(CategoryCustomException ce){
+        return new ResponseEntity<>(ce.getMessage(), HttpStatus.NOT_FOUND);
+    }
 }

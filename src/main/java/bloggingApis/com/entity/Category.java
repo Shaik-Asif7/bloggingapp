@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Table(name = "Categories")
 @Getter
@@ -20,4 +22,8 @@ public class Category {
     @NotBlank(message = "Category title is required")
     private String title;
     private String description;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "category_id")
+    private List<Post> posts;
 }

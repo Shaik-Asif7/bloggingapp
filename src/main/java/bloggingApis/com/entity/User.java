@@ -9,6 +9,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.UniqueElements;
 
+import java.util.List;
+
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -30,6 +32,10 @@ public class User {
     private String password;
 
     private String about;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    private List<Post> post;
 
     public Integer getId() {
         return id;
@@ -70,4 +76,5 @@ public class User {
     public void setAbout(String about) {
         this.about = about;
     }
+
 }

@@ -1,4 +1,7 @@
 package bloggingApis.com.exception;
 
-public class PostCustomException {
+public class PostCustomException extends RuntimeException{
+    public PostCustomException(String message) {
+        super(message);
+    }
 }

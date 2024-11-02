@@ -18,6 +18,7 @@ public class Category {
     @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="category_id")
     private Integer categoryId;
     @NotBlank(message = "Category title is required")
     private String title;

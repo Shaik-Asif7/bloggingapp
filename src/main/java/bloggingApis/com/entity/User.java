@@ -9,18 +9,20 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.UniqueElements;
 
+import java.util.List;
+
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private int id;
-
+    private Integer id;
     @NotBlank(message = "Name required")
     @Size(min = 2,max =50,message = "Name must be between 2 and 50 characters")
     private String name;
 
+    @Column(unique = true,nullable = false)
     @Email(message = "Enter a valid email address")
     @NotBlank(message = "mail required")
     private String email;
@@ -31,11 +33,15 @@ public class User {
 
     private String about;
 
-    public int getId() {
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    private List<Post> post;
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -70,4 +76,5 @@ public class User {
     public void setAbout(String about) {
         this.about = about;
     }
+
 }

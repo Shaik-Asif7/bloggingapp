@@ -7,11 +7,17 @@ import bloggingApis.com.exception.CategoryCustomException;
 import bloggingApis.com.exception.PostCustomException;
 import bloggingApis.com.exception.UserCustomException;
 import bloggingApis.com.payload.PostDto;
+import bloggingApis.com.payload.PostResponse;
 import bloggingApis.com.repository.CategoryRepository;
 import bloggingApis.com.repository.PostRepository;
 import bloggingApis.com.repository.UserRepository;
 import bloggingApis.com.service.PostService;
 import org.modelmapper.ModelMapper;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,11 +35,22 @@ public class PostServiceImpl implements PostService {
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
     }
-    public List<PostDto> getAllPosts() {
-        List<Post> post=postRepository.findAll();
-        return post.stream()
+    public PostResponse getAllPosts(Integer pageNumber, Integer pageSize,String sortBy) {
+        Pageable p= PageRequest.of(pageNumber, pageSize, Sort.by(sortBy));
+        Page<Post> posts=postRepository.findAll(p);
+        List<Post> post=posts.getContent();
+        List<PostDto> postDtos= post.stream()
                 .map(post1->mapper.map(post1,PostDto.class))
                 .collect(Collectors.toList());
+        PostResponse postResponse=new PostResponse();
+        postResponse.setPageNumber(posts.getNumber());
+        postResponse.setPageSize(posts.getSize());
+        postResponse.setTotalPages(posts.getTotalPages());
+        postResponse.setLastPage(posts.isLast());
+        postResponse.setContent(postDtos);
+        postResponse.setTotalElements(posts.getTotalElements());
+        return  postResponse;
+
     }
     public PostDto getPostById(Integer id) {
         Post post=postRepository.findById(id).orElseThrow(()->new PostCustomException("Post not found with id "+id));
@@ -70,7 +87,14 @@ public class PostServiceImpl implements PostService {
                  .collect(Collectors.toList());
     }
 
-//
+    @Override
+    public List<PostDto> getResult(String keyword) {
+        List<Post> posts=postRepository.findByTitleContaining(keyword);
+        return posts.stream().map(post->mapper.map(post, PostDto.class))
+                .collect(Collectors.toList());
+    }
+
+    //
     public List<PostDto> getPostsByCategory(Integer categoryId) {
         Category cat=categoryRepository.findById(categoryId).orElseThrow(()-> new CategoryCustomException("Category not found"));
         List<Post> post=postRepository.findByCategory(cat);

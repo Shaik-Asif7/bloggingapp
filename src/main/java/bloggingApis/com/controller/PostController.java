@@ -1,8 +1,10 @@
 package bloggingApis.com.controller;
 
+import bloggingApis.com.config.AppConstants;
 import bloggingApis.com.entity.Post;
 import bloggingApis.com.payload.ApiResponse;
 import bloggingApis.com.payload.PostDto;
+import bloggingApis.com.payload.PostResponse;
 import bloggingApis.com.service.PostService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +24,10 @@ public class PostController {
         return new ResponseEntity<>(postService.addPost(post,userId,categoryId), HttpStatus.CREATED);
     }
     @GetMapping("/getAllPosts")
-    public ResponseEntity<List<PostDto>> getAllPosts() {
-        return new ResponseEntity<>(postService.getAllPosts(), HttpStatus.OK);
+    public ResponseEntity<PostResponse> getAllPosts(@RequestParam(value = "pageNumber",defaultValue = AppConstants.PAGE_NUMBER,required = false)Integer pageNumber,
+                                                    @RequestParam(value = "pageSize", defaultValue = AppConstants.PAGE_SIZE,required = false)Integer pageSize,
+                                                     @RequestParam(value = "sortBy",defaultValue =AppConstants.SORT_BY,required = false)String sortBy){
+        return new ResponseEntity<>(postService.getAllPosts(pageNumber, pageSize,sortBy), HttpStatus.OK);
     }
     @GetMapping("/getPostById/{id}")
     public ResponseEntity<PostDto> getPostById(@PathVariable("id") Integer id) {
@@ -45,6 +49,10 @@ public class PostController {
     @GetMapping("/getPostByUser/{id}")
     public ResponseEntity<List<PostDto>> getPostsByUser(@PathVariable("id") Integer userId) {
         return new ResponseEntity<>(postService.getPostsByUser(userId), HttpStatus.OK);
+    }
+    @GetMapping("/posts/search/{keyword}")
+    public ResponseEntity<List<PostDto>> getResult(@PathVariable("keyword")String keyword) {
+        return new ResponseEntity<>(postService.getResult(keyword), HttpStatus.OK);
     }
 
 

@@ -30,8 +30,8 @@ public class PostController {
         return new ResponseEntity<>(postService.getPostById(id), HttpStatus.OK);
     }
     @PutMapping("/updatePostById/{id}")
-    public PostDto updatePost(@RequestBody PostDto postDto, @PathVariable("id") Integer id) {
-        return postService.updatePost(postDto, id);
+    public PostDto updatePost(@RequestBody Post post, @PathVariable("id") Integer id) {
+        return postService.updatePost(post, id);
     }
     @DeleteMapping("/deletePostById/{id}")
     public ResponseEntity<ApiResponse> deletePost(@PathVariable("id") Integer id) {
@@ -42,10 +42,10 @@ public class PostController {
     public ResponseEntity<List<PostDto>> getPostsByCategory(@PathVariable("id") Integer categoryId) {
         return new ResponseEntity<>(postService.getPostsByCategory(categoryId), HttpStatus.OK);
     }
-//    @GetMapping("/getPostByUser")
-//    public ResponseEntity<List<PostDto>> getPostsByUser(@PathVariable("id") Integer id) {
-//        return new ResponseEntity<>(postService.getPostsByUser(id), HttpStatus.OK);
-//    }
+    @GetMapping("/getPostByUser/{id}")
+    public ResponseEntity<List<PostDto>> getPostsByUser(@PathVariable("id") Integer userId) {
+        return new ResponseEntity<>(postService.getPostsByUser(userId), HttpStatus.OK);
+    }
 
 
 }

@@ -10,11 +10,11 @@ import java.util.List;
 public interface PostService {
     public List<PostDto> getAllPosts();
     PostDto getPostById(Integer id);
-    PostDto updatePost(PostDto postDto, Integer id);
+    PostDto updatePost(Post post, Integer id);
     void deletePost(Integer id);
     PostDto addPost(Post post,Integer userId,Integer categoryId);
 
     List<PostDto> getPostsByCategory(Integer categoryId);
-//    //getPostByUser
-//    List<PostDto> getPostsByUser(Integer id);
+    //getPostByUser
+    List<PostDto> getPostsByUser(Integer id);
 }

@@ -39,13 +39,13 @@ public class PostServiceImpl implements PostService {
         Post post=postRepository.findById(id).orElseThrow(()->new PostCustomException("Post not found with id "+id));
         return mapper.map(post, PostDto.class);
     }
-    public PostDto updatePost(PostDto postDto, Integer id) {
-        Post post=postRepository.findById(id).orElseThrow(()->new PostCustomException("Post not found with id "+id));
-        post.setTitle(postDto.getTitle());
-        post.setContent(postDto.getContent());
-        post.setImage(post.getImage());
-        postRepository.save(post);
-        return mapper.map(post,PostDto.class);
+    public PostDto updatePost(Post post, Integer id) {
+        Post post1=postRepository.findById(id).orElseThrow(()->new PostCustomException("Post not found with id "+id));
+        post1.setTitle(post.getTitle());
+        post1.setContent(post.getContent());
+        post1.setImage(post.getImage());
+        postRepository.save(post1);
+        return mapper.map(post1,PostDto.class);
     }
 
     public void deletePost(Integer id) {
@@ -62,16 +62,18 @@ public class PostServiceImpl implements PostService {
     }
 
 
-//    public List<PostDto> getPostsByUser(Integer id) {
-//        List<Post> post=postRepository.getPostsByUser(id);
-//         return  post.stream()
-//                 .map(post1->mapper.map(post1, PostDto.class))
-//                 .collect(Collectors.toList());
-//    }
-//
+    public List<PostDto> getPostsByUser(Integer userId) {
+        User user=userRepository.findById(userId).orElseThrow(()-> new UserCustomException("user not found with id %d",userId));
+        List<Post> post=postRepository.findByUser(user);
+         return  post.stream()
+                 .map(post1->mapper.map(post1, PostDto.class))
+                 .collect(Collectors.toList());
+    }
+
 //
     public List<PostDto> getPostsByCategory(Integer categoryId) {
-        List<Post> post=postRepository.getPostsByCategory(categoryId);
+        Category cat=categoryRepository.findById(categoryId).orElseThrow(()-> new CategoryCustomException("Category not found"));
+        List<Post> post=postRepository.findByCategory(cat);
         return post.stream()
                 .map(post1->mapper.map(post1, PostDto.class))
                 .collect(Collectors.toList());

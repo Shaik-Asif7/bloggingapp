@@ -14,10 +14,7 @@ public interface PostService {
     PostDto updatePost(Post post, Integer id);
     void deletePost(Integer id);
     PostDto addPost(Post post,Integer userId,Integer categoryId);
-
     List<PostDto> getPostsByCategory(Integer categoryId);
-    //getPostByUser
     List<PostDto> getPostsByUser(Integer id);
-
     List<PostDto> getResult(String keyword);
 }

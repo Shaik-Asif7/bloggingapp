@@ -6,8 +6,8 @@ import lombok.Setter;
 
 import java.util.List;
 @NoArgsConstructor
-@Getter
 @Setter
+@Getter
 public class PostResponse {
     private List<PostDto> content;
     private Long totalElements;

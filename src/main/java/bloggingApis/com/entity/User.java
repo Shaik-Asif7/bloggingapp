@@ -8,13 +8,20 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.UniqueElements;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
@@ -28,7 +35,7 @@ public class User {
     private String email;
 
     @NotBlank(message = "Password required")
-    @Size(min = 8,max = 50,message = "Password must be between 8 and 50 characters")
+    @Size(min = 8,max = 100,message = "Password must be between 8 and 50 characters")
     private String password;
 
     private String about;
@@ -36,6 +43,15 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private List<Post> post;
+
+     @OneToMany(cascade = CascadeType.ALL)
+     @JoinColumn(name="user_id")
+     private List<Comment> comment;
+
+     @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+     @JoinTable(name = "user_role",joinColumns = @JoinColumn(name="user",referencedColumnName = "id")
+     ,inverseJoinColumns = @JoinColumn(name="role",referencedColumnName = "roleId"))
+     private Set<Role> roles=new HashSet<Role>();
 
     public Integer getId() {
         return id;
@@ -61,8 +77,37 @@ public class User {
         this.email = email;
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roles.stream().map(role->new SimpleGrantedAuthority(role.getName()))
+                .collect(Collectors.toList());
+    }
+
     public String getPassword() {
         return password;
+    }
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
     public void setPassword(String password) {

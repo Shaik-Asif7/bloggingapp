@@ -3,6 +3,7 @@ package bloggingApis.com.repository;
 import bloggingApis.com.entity.Category;
 import bloggingApis.com.entity.Post;
 import bloggingApis.com.entity.User;
+import bloggingApis.com.payload.PostDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -15,5 +16,5 @@ public interface PostRepository extends JpaRepository<Post,Integer> {
 
       List<Post> findByUser(User user);
 
-
+      List<Post> findByTitleContaining(String keyword);
 }
